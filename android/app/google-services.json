@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "283724717952",
+    "project_id": "hospital-e86d3",
+    "storage_bucket": "hospital-e86d3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:283724717952:android:be8c7be08a67520c15ab65",
+        "android_client_info": {
+          "package_name": "com.ahmedM.Ghanam.hospital"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDXUYK0PU2qO6m7cnMd2CkhDS_lq5_QEnY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
