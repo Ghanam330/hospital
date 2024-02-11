@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../constants/colors.dart';
 import '../../../constants/strings.dart';
-
-
+import '../../patient_screen/patient_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -17,41 +17,58 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    FirebaseAuth.instance.authStateChanges().listen((user) {
-      if (user == null) {
-        if (mounted) {
-          setState(() => Timer(
-            const Duration(seconds: 5),
-                () => Navigator.pushNamedAndRemoveUntil(
-                context,onboarding, (route) => false),
-          ));
-        }
-      } else {
-        if (mounted) {
-          setState(() => Timer(
-            const Duration(seconds: 5),
-                () => Navigator.pushNamedAndRemoveUntil(
-                context,homeScreen, (route) => false),
-          ));
-        }
-      }
-    });
+    checkLoginStatus();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-
         decoration: const BoxDecoration(color: Colors.white),
-        child:  Center(
+        child: Center(
           child: SizedBox(
-            width:220,
+              width: 220,
               height: 220,
-              child: Image.asset('assets/images/icon.jpg')
-          ),
+              child: Image.asset('assets/images/icon.jpg')),
         ),
       ),
     );
+  }
+
+  void checkLoginStatus() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? userId = prefs.getString('userId');
+    String? optionLogin = prefs.getString('option');
+    if (userId != null && userId.isNotEmpty) {
+      if (optionLogin == 'Doctor') {
+        if (mounted) {
+          setState(() => Timer(
+                const Duration(seconds: 5),
+                () => Navigator.pushNamedAndRemoveUntil(
+                    context, homeScreen, (route) => false),
+              ));
+        }
+      } else {
+        if (mounted) {
+          setState(() => Timer(
+                const Duration(seconds: 5),
+                () => Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                        builder: (BuildContext context) =>
+                            const PatientScreen()),
+                    (Route<dynamic> route) => false),
+              ));
+        }
+      }
+    } else {
+      if (mounted) {
+        setState(() => Timer(
+              const Duration(seconds: 5),
+              () => Navigator.pushNamedAndRemoveUntil(
+                  context, onboarding, (route) => false),
+            ));
+      }
+    }
   }
 }

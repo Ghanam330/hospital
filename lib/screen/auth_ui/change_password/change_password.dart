@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../provider/app_provider.dart';
+
 
 
 class PasswordResetScreen extends StatefulWidget {
@@ -15,7 +15,7 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final authProvider = Provider.of<AppProvider>(context);
+    // final authProvider = Provider.of<AppProvider>(context);
 
     return  Scaffold(
       backgroundColor: Colors.white,
@@ -52,7 +52,7 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
             onPressed: () {
               final email = _emailController.text.trim();
               if (email.isNotEmpty) {
-                authProvider.forgotPassword(email);
+                // authProvider.forgotPassword(email);
               }
             },
             child: const Text('Send Link'),

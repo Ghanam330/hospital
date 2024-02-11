@@ -6,7 +6,7 @@ import '../../../widgets/custom_text.dart';
 import '../../../widgets/option_button.dart';
 
 class SignUpScreen extends StatefulWidget {
-  SignUpScreen({Key? key}) : super(key: key);
+  const SignUpScreen({Key? key}) : super(key: key);
 
   @override
   State<SignUpScreen> createState() => _SignUpScreenState();
@@ -22,6 +22,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   var passwordController = TextEditingController();
 
   var phoneController = TextEditingController();
+  var idCardController = TextEditingController();
 
   IconData suffix = Icons.visibility_outlined;
   bool isPassword = true;
@@ -68,7 +69,23 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   const SizedBox(
                     height: 20,
                   ),
-
+                  defaultFormField(
+                    controller: idCardController,
+                    type: TextInputType.phone,
+                    validate: (String? value) {
+                      if (value!.isEmpty) {
+                        return 'please enter your Id number';
+                      } else if (value.length < 4) {
+                        return 'please enter your PersonId';
+                      }
+                      return null;
+                    },
+                    label: 'CardId',
+                    prefix: Icons.insert_drive_file,
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
                   defaultFormField(
                     controller: nameController,
                     type: TextInputType.name,
@@ -144,12 +161,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ElevatedButton(
                     onPressed: () async {
                       if (_globalKey.currentState!.validate()) {
-                        bool isLogin = await FirebaseAuthHelper.instance.signUp(
-                            nameController.text,
-                            emailController.text,
-                            passwordController.text,
-                            phoneController.text,
-                            context);
+                        bool isLogin = await FirebaseAuthHelper.instance
+                            .registerDoctor(
+                                idCardController.text,
+                                nameController.text,
+                                emailController.text,
+                                passwordController.text,
+                                phoneController.text,
+                                context);
                         if (isLogin) {
                           // ignore: use_build_context_synchronously
                           Navigator.pushNamedAndRemoveUntil(

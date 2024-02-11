@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:hospital/screen/homescreen/home_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../constants/colors.dart';
 import '../../../constants/constant.dart';
 import '../../../constants/strings.dart';
@@ -20,9 +22,10 @@ class _LoginScreenState extends State<LoginScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   IconData suffix = Icons.visibility_outlined;
-
+  QuerySnapshot? querySnapshot;
   bool isPassword = true;
   String? selectedUserType;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -149,17 +152,27 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   ElevatedButton(
                     onPressed: () async {
-                      if (_globalKey.currentState!.validate() && selectedUserType != null ) {
-                        bool isLogin = await  FirebaseAuthHelper.instance.login(
-                          emailController.text,
-                          passwordController.text,
-                          context,
-                        );
+                      if (_globalKey.currentState!.validate() &&
+                          selectedUserType != null) {
+                        bool isLogin =false;
+                        if (selectedUserType == 'Doctor') {
+                          isLogin = await FirebaseAuthHelper().loginDoctor(
+                              emailController.text,
+                              passwordController.text,
+                              context);
+                          saveOptionLogin('Doctor');
+                        } else {
+                          isLogin = await FirebaseAuthHelper().loginPatient(
+                              emailController.text,
+                              passwordController.text,
+                              context);
+                          saveOptionLogin('Patient');
+                        }
                         if (isLogin) {
                           _navigateToUserScreen();
                         }
                       } else {
-                        showMessage("select Option");
+                        showMessage("select Option",context);
                       }
                     },
                     child: const Text('Sign In'),
@@ -186,16 +199,25 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _navigateToUserScreen() {
     if (selectedUserType == 'Doctor') {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const HomeScreen()),
-      );
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) =>
+                  HomeScreen()),
+              (Route<dynamic> route) => false);
     } else {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const PatientScreen()),
-      );
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) =>
+                  const PatientScreen()),
+              (Route<dynamic> route) => false);
     }
+  }
+
+  void saveOptionLogin(String option) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('option', option);
   }
   void changePasswordVisibility() {
     isPassword = !isPassword;
