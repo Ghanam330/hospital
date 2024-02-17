@@ -48,7 +48,8 @@ dependencies:
   lottie: ^3.0.0
   sizer: ^2.0.15
   flutter_bloc: ^8.1.1
-
+  conditional_builder_null_safety: ^0.0.6
+  intl: ^0.17.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

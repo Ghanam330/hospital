@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:hospital/screen/auth_ui/change_password/change_password.dart';
-import 'package:hospital/screen/auth_ui/login/login_screen.dart';
-import 'package:hospital/screen/auth_ui/sign_up/signup_screen.dart';
-import 'package:hospital/screen/auth_ui/splach/intro_screen.dart';
-import 'package:hospital/screen/auth_ui/splach/splash_screen.dart';
+import 'package:hospital/screen/doctor_app/auth_ui/change_password/change_password.dart';
+import 'package:hospital/screen/doctor_app/auth_ui/login/login_screen.dart';
+import 'package:hospital/screen/doctor_app/auth_ui/sign_up/signup_screen.dart';
+import 'package:hospital/screen/doctor_app/homescreen/home_screen.dart';
+import 'package:hospital/screen/doctor_app/splach/intro_screen.dart';
+import 'package:hospital/screen/doctor_app/splach/splash_screen.dart';
 import 'constants/strings.dart';
-import 'screen/homescreen/home_screen.dart';
+
 
 
 class AppRouter {

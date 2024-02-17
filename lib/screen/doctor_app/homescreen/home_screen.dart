@@ -1,13 +1,14 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hospital/constants/colors.dart';
-import 'package:hospital/screen/my_profile/my_profile.dart';
 import 'package:lottie/lottie.dart';
-import 'package:provider/provider.dart';
-
-import '../../constants/constant.dart';
-import '../../cubit/user_cubit/user_cubit.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../../../cubit/user_cubit/user_cubit.dart';
+import '../my_profile/my_profile.dart';
+import '../patient_screen/pattien_login.dart';
+import '../splach/intro_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   HomeScreen({super.key});
@@ -38,7 +39,7 @@ class HomeScreen extends StatelessWidget {
     // Format the date and time
     String formattedDate = "${now.year}-${now.month}-${now.day}";
     return BlocProvider(
-      create: (context) => UserCubit(),
+      create: (context) => UserCubit()..getSnapShot(),
       child: BlocBuilder<UserCubit, UserState>(
         builder: (context, state) {
           if (state is HospitalGetUserLoadingState) {
@@ -68,6 +69,7 @@ class HomeScreen extends StatelessWidget {
               ),
             );
           } else {
+            String doctorName = UserCubit.get(context).userModel!.name;
             return Scaffold(
               body: SingleChildScrollView(
                 child: Container(
@@ -82,39 +84,52 @@ class HomeScreen extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 35, left: 15, right: 15),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 35, left: 15, right: 15),
                               child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  InkWell(
-                                    onTap: () {},
-                                    child: const Icon(
-                                      Icons.sort,
-                                      color: Colors.white,
-                                      size: 40,
+                                  PopupMenuButton<String>(
+                                    onSelected: (value) {
+                                      if (value == 'item1') {
+                                        logout(context);
+                                      }
+                                    },
+                                    itemBuilder: (BuildContext context) {
+                                      return [
+                                        const PopupMenuItem<String>(
+                                          value: 'item1',
+                                          child: Text(
+                                            'Sign Out',
+                                            style: TextStyle(
+                                              color: Colors.blue, // Set the desired text color
+                                            ),
+                                          ),
+                                        ),
+                                      ];
+                                    },
+                                    icon: const Icon(
+                                      Icons.more_vert,
+                                      color: Colors.white, // Set the desired icon color
                                     ),
                                   ),
+
                                   InkWell(
                                     onTap: () {
-                                      Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const ProfileScreen()));
+                                      Navigator.of(context).push(MaterialPageRoute(
+                                          builder: (context) => const ProfileScreen()));
                                     },
                                     child: Container(
                                       decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(15)),
+                                          borderRadius: BorderRadius.circular(15)),
                                       height: 50,
                                       width: 50,
                                       child: SvgPicture.asset(
                                         'assets/images/profile.svg',
                                       ),
                                     ),
-                                  )
+                                  ),
+
                                 ],
                               ),
                             ),
@@ -165,7 +180,17 @@ class HomeScreen extends StatelessWidget {
                             itemCount: 5,
                             itemBuilder: (context, index) {
                               return InkWell(
-                                onTap: () {},
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => PatientLoginScreen(
+                                        doctorName: doctorName,
+                                        section: title[index],
+                                      ),
+                                    ),
+                                  );
+                                },
                                 child: Container(
                                   margin: const EdgeInsets.symmetric(
                                       vertical: 8, horizontal: 20),
@@ -214,5 +239,12 @@ class HomeScreen extends StatelessWidget {
         },
       ),
     );
+  }
+  Future<void> logout(BuildContext context) async {
+    await FirebaseAuth.instance.signOut();
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    await preferences.clear();
+    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+        IntroScreen()), (Route<dynamic> route) => false);
   }
 }

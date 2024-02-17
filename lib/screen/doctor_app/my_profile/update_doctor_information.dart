@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hospital/constants/colors.dart';
 import 'package:hospital/constants/constant.dart';
+import '../../../constants/icon.dart';
+import '../../../cubit/user_cubit/user_cubit.dart';
+import '../../../widgets/custom_button.dart';
 
-import '../../constants/icon.dart';
-import '../../cubit/user_cubit/user_cubit.dart';
-import '../../widgets/custom_button.dart';
-import '../../widgets/show_loading_indicater.dart';
+
 
 class UpdateUserDoctor extends StatelessWidget {
   UpdateUserDoctor({Key? key}) : super(key: key);
@@ -66,11 +66,11 @@ class UpdateUserDoctor extends StatelessWidget {
                       UserCubit.get(context).updateUser(
                           name: nameController.text,
                           phone: phoneController.text,
-                          personId: idCardController.text);
+                          personId: idCardController.text,context: context);
                     },
-                    child: Text(
+                    child: const Text(
                       "update",
-                      style: const TextStyle(color: kPrimaryBlue),
+                      style: TextStyle(color: kPrimaryBlue),
                     ),
                   ),
                 ],
@@ -95,11 +95,11 @@ class UpdateUserDoctor extends StatelessWidget {
                                 alignment: AlignmentDirectional.bottomEnd,
                                 children: [
                                   CircleAvatar(
+                                    backgroundColor: kPrimaryBlue,
                                     radius: 64.0,
-                                    backgroundColor: Theme.of(context)
-                                        .scaffoldBackgroundColor,
                                     child: CircleAvatar(
                                       radius: 60.0,
+                                      backgroundColor: kWhiteColor,
                                       backgroundImage: UserCubit.get(context)
                                                   .profileImage ==
                                               null
@@ -140,6 +140,7 @@ class UpdateUserDoctor extends StatelessWidget {
                                     name: nameController.text,
                                     phone: phoneController.text,
                                     personId: idCardController.text,
+                                  context: context
                                   );
                                 },
                               ),
@@ -187,26 +188,6 @@ class UpdateUserDoctor extends StatelessWidget {
                         const SizedBox(
                           height: 20.0,
                         ),
-                        // defaultFormField(
-                        //   redOnly: true,
-                        //   controller: emailController,
-                        //   type: TextInputType.emailAddress,
-                        //   validate: (String? value) {
-                        //     if (value!.isEmpty) {
-                        //       return 'please enter your email address';
-                        //     }
-                        //     if (!RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]")
-                        //         .hasMatch(value)) {
-                        //       return ("Please Enter a valid email");
-                        //     }
-                        //     return null;
-                        //   },
-                        //   label: 'Email',
-                        //   prefix: Icons.email_outlined,
-                        // ),
-                        // const SizedBox(
-                        //   height: 20.0,
-                        // ),
                         defaultFormField(
                           controller: phoneController,
                           type: TextInputType.phone,

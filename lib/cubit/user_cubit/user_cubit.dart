@@ -1,14 +1,15 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hospital/models/patient/patient_model.dart';
 import 'package:hospital/models/user_model/user_model.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../constants/constant.dart';
+import '../../screen/doctor_app/my_profile/my_profile.dart';
+
 
 part 'user_state.dart';
 
@@ -20,6 +21,7 @@ class UserCubit extends Cubit<UserState> {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   UserModel? userModel;
+
 
   void getSnapShot() async {
     emit(HospitalGetUserLoadingState());
@@ -57,7 +59,7 @@ class UserCubit extends Cubit<UserState> {
     }
   }
 
-  void uploadProfileImage({required name, required phone, required personId}) {
+  void uploadProfileImage({required name, required phone, required personId,required BuildContext context}) {
     emit(HospitalUpdateUserLoadingState());
     firebase_storage.FirebaseStorage.instance
         .ref()
@@ -68,7 +70,7 @@ class UserCubit extends Cubit<UserState> {
         .putFile(profileImage!)
         .then((value) {
       value.ref.getDownloadURL().then((value) {
-        updateUser(name: name, phone: phone,  image: value,personId: personId);
+        updateUser(name: name, phone: phone,  image: value,personId: personId,context: context);
         showToast(text: "Upload Image SUCCESS", state: ToastStates.SUCCESS);
       }).catchError((error) {
         emit(HospitalUploadProfileImageErrorState());
@@ -80,8 +82,7 @@ class UserCubit extends Cubit<UserState> {
     });
   }
 
-  void updateUser(
-      {required name, required phone, String? image, required String personId}) {
+  void updateUser({required name, required phone, String? image, required String personId,required BuildContext context}) async {
     UserModel model = UserModel(
       name: name,
       email: userModel!.email,
@@ -91,15 +92,19 @@ class UserCubit extends Cubit<UserState> {
       personId: personId,
       password: userModel!.password,
     );
-
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? userId = prefs.getString('userId');
     emit(HospitalUpdateUserLoadingState());
     FirebaseFirestore.instance
         .collection('doctors')
-        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .doc(userId)
         .update(model.toJson())
         .then((value) {
-      getSnapShot();
-      // get user
+      // Navigator.pop(context);
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+          builder: (context) =>const ProfileScreen()));
       showToast(text: "Update User SUCCESS", state: ToastStates.SUCCESS);
     }).catchError((onError) {
       emit(HospitalUpdateUserErrorState(onError));

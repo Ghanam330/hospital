@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hospital/screen/my_profile/update_doctor_information.dart';
-import '../../constants/colors.dart';
-import '../../cubit/user_cubit/user_cubit.dart';
-
+import 'package:hospital/screen/doctor_app/my_profile/update_doctor_information.dart';
+import '../../../constants/colors.dart';
+import '../../../cubit/user_cubit/user_cubit.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -13,19 +12,12 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-
-  // @override
-  // void initState() {
-  //   // TODO: implement initState
-  //   UserCubit.get(context).getSnapShot();
-  //   super.initState();
-  // }
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => UserCubit()..getSnapShot(),
       child: BlocBuilder<UserCubit, UserState>(
-        builder: (context,state) {
+        builder: (context, state) {
           if (state is HospitalGetUserLoadingState) {
             return Container(
               color: Colors.white,
@@ -56,19 +48,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
             return Scaffold(
               backgroundColor: kPrimaryBlue,
               appBar: AppBar(
-                iconTheme: const IconThemeData(
-                    color: Colors.white
-                ),
+                iconTheme: const IconThemeData(color: Colors.white),
                 actions: [
                   IconButton(
-                    icon: Icon(Icons.edit),
+                    icon: const Icon(Icons.edit),
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => UpdateUserDoctor()));
+                      Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (context) => UpdateUserDoctor()),);
                       // Add your onPressed logic here
                     },
                   ),
                 ],
-                backgroundColor:kPrimaryBlue,
+                backgroundColor: kPrimaryBlue,
               ),
               body: SizedBox(
                 width: double.infinity,
@@ -96,8 +88,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   blurRadius: 10,
                                 ),
                               ],
-                              image:  DecorationImage(
-                                image: NetworkImage(UserCubit.get(context).userModel!.image),
+                              image: DecorationImage(
+                                image: NetworkImage(
+                                    UserCubit.get(context).userModel!.image),
                               ),
                             ),
                           ),
@@ -131,15 +124,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 fontSize: 20,
                               ),
                             ),
-                            const SizedBox(height: 16,),
-                            listProfile(Icons.person, "Full Name",  UserCubit.get(context)
-                                .userModel!.name),
-                            listProfile(Icons.email, "Email",  UserCubit.get(context)
-                                .userModel!.email),
-                            listProfile(Icons.insert_drive_file, "IdCard",  UserCubit.get(context)
-                                .userModel!.personId),
-                            listProfile(Icons.phone, "Phone Number",  UserCubit.get(context)
-                                .userModel!.phone),
+                            const SizedBox(
+                              height: 16,
+                            ),
+                            listProfile(Icons.person, "Full Name",
+                                UserCubit.get(context).userModel!.name),
+                            listProfile(Icons.email, "Email",
+                                UserCubit.get(context).userModel!.email),
+                            listProfile(Icons.insert_drive_file, "IdCard",
+                                UserCubit.get(context).userModel!.personId),
+                            listProfile(Icons.phone, "Phone Number",
+                                UserCubit.get(context).userModel!.phone),
                           ],
                         ),
                       ),
@@ -152,7 +147,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         },
       ),
     );
-
   }
 
   Widget listProfile(IconData icon, String text1, String text2) {
@@ -166,7 +160,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
             icon,
             size: 20,
           ),
-          const SizedBox(width: 24,),
+          const SizedBox(
+            width: 24,
+          ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

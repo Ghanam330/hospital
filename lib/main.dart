@@ -17,46 +17,37 @@ void main()async {
 }
 class MyApp extends StatelessWidget {
   final AppRouter appRouter;
-
-  const MyApp({Key? key, required this.appRouter}) : super(key: key);
+  final CustomTheme customTheme = CustomTheme(const Size(375.0, 812.0));
+  MyApp({Key? key, required this.appRouter}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-        create: (context) => UserCubit(),
-        child: BlocConsumer<UserCubit, UserState>(
-            listener: (context, state) {
-              // TODO: implement listener
-            },
-            builder: (context, state) {
-              // return LayoutBuilder(
-              //     builder: (context, constraints) {
-              //       final customTheme = CustomTheme(constraints);
-              //     return MaterialApp(
-              //       debugShowCheckedModeBanner: false,
-              //       theme: ThemeData(
-              //         primarySwatch: Colors.blue,
-              //         textTheme: customTheme.nunito(),
-              //         elevatedButtonTheme: customTheme.elevatedButtonTheme(),
-              //         outlinedButtonTheme: customTheme.outlinedButtonTheme(),
-              //         textButtonTheme: customTheme.textButtonTheme(),
-              //         dividerTheme: customTheme.dividerTheme(),
-              //       ),
-              //       onGenerateRoute: appRouter.generateRoute,
-              //     );
-              //   }
-              // );
-              return MaterialApp(
-                debugShowCheckedModeBanner: false,
-                theme: ThemeData(
-                  primarySwatch: Colors.blue,
-                ),
-                onGenerateRoute: appRouter.generateRoute,
-              );
-            })
+      create: (context) => UserCubit(),
+      child: BlocConsumer<UserCubit, UserState>(
+        listener: (context, state) {
+          // TODO: Implement listener
+        },
+        builder: (context, state) {
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            theme: ThemeData(
+              primarySwatch: Colors.blue,
+              textTheme: customTheme.nunito(),
+              elevatedButtonTheme: customTheme.elevatedButtonTheme(),
+              outlinedButtonTheme: customTheme.outlinedButtonTheme(),
+              textButtonTheme: customTheme.textButtonTheme(),
+              dividerTheme: customTheme.dividerTheme(),
+            ),
+            onGenerateRoute: appRouter.generateRoute,
+          );
+        },
+      ),
     );
   }
+
 }
+
 //   @override
 //   Widget build(BuildContext context) {
 //     return ChangeNotifierProvider(

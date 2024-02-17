@@ -1,10 +1,8 @@
 import 'dart:async';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../../constants/colors.dart';
 import '../../../constants/strings.dart';
-import '../../patient_screen/patient_screen.dart';
+import '../../patient_app/patientapp_details_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -56,7 +54,7 @@ class _SplashScreenState extends State<SplashScreen> {
                     context,
                     MaterialPageRoute(
                         builder: (BuildContext context) =>
-                            const PatientScreen()),
+                          PatientAppDetailsScreen()),
                     (Route<dynamic> route) => false),
               ));
         }
