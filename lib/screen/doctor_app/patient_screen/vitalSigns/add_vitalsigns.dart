@@ -1,4 +1,6 @@
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
+import 'package:firebase_database/firebase_database.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hospital/constants/colors.dart';
@@ -7,31 +9,60 @@ import 'package:hospital/cubit/patient_cubit/patient_cubit.dart';
 import 'package:intl/intl.dart';
 import '../../../../models/patient/patient_model.dart';
 
-
-class AddVitalSigns extends StatelessWidget {
+class AddVitalSigns extends StatefulWidget {
   AddVitalSigns({Key? key}) : super(key: key);
 
+  @override
+  State<AddVitalSigns> createState() => _AddVitalSignsState();
+}
 
-
+class _AddVitalSignsState extends State<AddVitalSigns> {
   DateTime selectedDateTime = DateTime.now();
+
   TextEditingController temperatureController = TextEditingController();
+
   TextEditingController oxygenLevelController = TextEditingController();
+
   TextEditingController heartRateController = TextEditingController();
+
   TextEditingController data_time_Controller = TextEditingController();
+
   final GlobalKey<FormState> _globalKey = GlobalKey<FormState>();
+  DatabaseReference? _databaseReference;
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize the DatabaseReference
+    _databaseReference = FirebaseDatabase.instance.reference().child('Data');
+
+    // Set up the event listener for real-time updates
+    _databaseReference!.onValue.listen((event) {
+      // Handle the updated data
+      DataSnapshot dataSnapshot = event.snapshot;
+      Map<dynamic, dynamic>? dataMap =
+          dataSnapshot.value as Map<dynamic, dynamic>?;
+      if (dataMap != null) {
+        setState(() {
+          // Update the TextFormFields with the new data
+          temperatureController.text = dataMap['BodyTemperature'].toString() ?? '';
+          oxygenLevelController.text = dataMap['HartRate'].toString() ?? '';
+          heartRateController.text = dataMap['SpO2'].toString() ?? '';
+        });
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) =>
-          PatientCubit(),
+      create: (context) => PatientCubit(),
       child: BlocBuilder<PatientCubit, PatientState>(
         builder: (context, state) {
           return Scaffold(
             backgroundColor: Colors.white,
             appBar: AppBar(
-              title:
-              const Text('Profile', style: TextStyle(color: kTextColor)),
+              title: const Text('Profile', style: TextStyle(color: kTextColor)),
               backgroundColor: Colors.white,
               elevation: 0.0,
             ),
@@ -70,8 +101,8 @@ class AddVitalSigns extends StatelessWidget {
 
                               // Format the selectedDateTime to display in the TextFormField
                               String formattedDateTime =
-                              DateFormat('yyyy-MM-dd HH:mm')
-                                  .format(selectedDateTime);
+                                  DateFormat('yyyy-MM-dd HH:mm')
+                                      .format(selectedDateTime);
 
                               data_time_Controller.text = formattedDateTime;
                             }
@@ -144,19 +175,19 @@ class AddVitalSigns extends StatelessWidget {
                               onPressed: () {
                                 if (_globalKey.currentState!.validate()) {
                                   PatientCubit.get(context).setVitalSigns(
-                                     temperatureController.text,
+                                      temperatureController.text,
                                       heartRateController.text,
                                       oxygenLevelController.text,
-                                      data_time_Controller.text, context);
+                                      data_time_Controller.text,
+                                      context);
                                 }
                               },
                               child: const Text('Add VitalSigns'),
                             );
                           },
-                          fallback: (BuildContext context) =>
-                          const Center(
-                            child: CircularProgressIndicator(),
-                          )),
+                          fallback: (BuildContext context) => const Center(
+                                child: CircularProgressIndicator(),
+                              )),
                     ],
                   ),
                 ),
@@ -168,5 +199,4 @@ class AddVitalSigns extends StatelessWidget {
       ),
     );
   }
-
 }

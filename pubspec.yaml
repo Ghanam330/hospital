@@ -50,13 +50,18 @@ dependencies:
   flutter_bloc: ^8.1.1
   conditional_builder_null_safety: ^0.0.6
   intl: ^0.17.0
+  firebase_database: ^10.4.9
+
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
-
+  flutter_launcher_icons: ^0.13.1
   flutter_lints: ^2.0.0
-
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/hospital.png"
 
 flutter:
 

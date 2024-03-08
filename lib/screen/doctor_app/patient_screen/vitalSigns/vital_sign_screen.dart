@@ -66,9 +66,20 @@ class VitalSignsScreen extends StatelessWidget {
                   title: const Text('VitalSigns',
                       style: TextStyle(color: kTextColor)),
                   backgroundColor: Colors.white,
+                  actions: [
+                    IconButton(
+                      icon: const Icon(Icons.add),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => AddVitalSigns()),
+                        );
+                      },
+                    ),
+                  ],
                 ),
                 body: ListView.builder(
-
                   itemCount: PatientCubit.get(context).vitalSignsList.length,
                   itemBuilder: (context, index) {
                     VitalSignsModel vitalSigns =
@@ -99,7 +110,19 @@ class VitalSignsScreen extends StatelessWidget {
                   title: const Text('VitalSigns',
                       style: TextStyle(color: kTextColor)),
                   backgroundColor: Colors.white,
-                ),
+                  actions: [
+                    IconButton(
+                      icon: const Icon(Icons.add),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => AddVitalSigns()),
+                  );
+                },
+              ),
+          ],
+          ),
                 body: Center(
                   child: Column(
                     children: [
